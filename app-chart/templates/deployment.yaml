@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nginxApp.deploymentName }}
+  labels:
+{{- include "commonLabels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.nginxApp.replicas }}
+  selector:
+    matchLabels:
+{{- include "commonLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+{{- include "commonLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      containers:
+        - name: {{ .Values.nginxApp.containerName }}
+          image: {{ .Values.nginxApp.image.repository }}:{{ .Values.nginxApp.image.tag }}
+          ports:
+            - name: {{ .Values.nginxApp.containerPortName }}
+              containerPort: {{ .Values.nginxApp.containerPortNumber }}
