@@ -39,4 +39,4 @@ jobs:
         run: |
           chart_file=$(ls packaged/*.tgz)
           gcloud auth configure-docker eu.gcr.io
-          helm push chart_file.tgz oci://us-central1-docker.pkg.dev/my-pro-417700/quickstart-helm-repo
+          helm push chart_file.tgz oci://us-central1-docker.pkg.dev/my-pro-417700/my-chart
