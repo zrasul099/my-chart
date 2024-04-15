@@ -32,14 +32,12 @@ jobs:
 
       - name: Authenticate with Google Artifact Registry
         run: |
-          gcloud auth configure-docker -q
-          gcloud auth list
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      - id: docker-push-tagged
-        name: Tag Docker image and push to Google Artifact Registry
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: |
-             eu-central1-docker.pkg.dev/my-pro-417700/my-chart/nginx:${{ steps.get-tag.outputs.short_ref }}
-             eu-central1-docker.pkg.dev/my-pro-417700/my-chart/nginx:latest
+      - name: Tag and Push Helm chart to Google Artifact Registry
+        run: |
+          chart_file=$(ls packaged/*.tgz)
+          chart_version=$(echo $chart_file | sed -n 's/.*-\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p')
+          docker tag ${chart_file} us-central1-docker.pkg.dev/my-pro-417700/chart:${chart_version}
+          docker push us-central1-docker.pkg.dev/my-pro-417700/chart:${chart_version}
+
