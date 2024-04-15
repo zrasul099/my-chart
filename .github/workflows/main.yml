@@ -35,8 +35,11 @@ jobs:
           gcloud auth configure-docker -q
           gcloud auth list
 
-      - name: Tag and Push Helm chart to Google Artifact Registry
-        run: |
-          chart_file=$(ls packaged/*.tgz)
-          gcloud auth configure-docker eu.gcr.io
-          helm push chart_file.tgz oci://us-central1-docker.pkg.dev/my-pro-417700/my-chart
+      - id: docker-push-tagged
+        name: Tag Docker image and push to Google Artifact Registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+             eu-central1-docker.pkg.dev/my-pro-417700/my-chart/nginx:${{ steps.get-tag.outputs.short_ref }}
+             eu-central1-docker.pkg.dev/my-pro-417700/my-chart/nginx:latest
