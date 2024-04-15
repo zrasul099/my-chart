@@ -1,0 +1,23 @@
+name: Helm Lint
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to match your main branch name
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: 'v3.7.0'  # Adjust the Helm version as needed
+
+      - name: Lint Helm chart
+        run: |
+          helm lint ./app-chart
