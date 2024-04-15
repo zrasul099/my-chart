@@ -27,7 +27,7 @@ jobs:
 
       - name: Package Helm chart
         run: |
-          helm package ./app-chart -d packaged
+          helm package app-chart/ -d packaged
         working-directory: ${{ github.workspace }}
 
       - name: Authenticate with Google Artifact Registry
@@ -39,5 +39,4 @@ jobs:
         run: |
           chart_file=$(ls packaged/*.tgz)
           gcloud auth configure-docker eu.gcr.io
-          docker tag ${chart_file} eu.gcr.io/my-pro-417700/helm-chart:${{ github.sha }}
-          docker push eu.gcr.io/my-pro-417700/helm-chart:${{ github.sha }}
+          helm push hello-chart-0.1.0.tgz oci://us-central1-docker.pkg.dev/my-pro-417700/quickstart-helm-repo
