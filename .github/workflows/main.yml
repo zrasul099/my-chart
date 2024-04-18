@@ -25,7 +25,7 @@ jobs:
 
     - name: Package Helm chart
       run: |
-        helm package rasul-app/ -d packaged-charts
+          helm package app-chart/ -d packaged
       working-directory: ${{ github.workspace }}
 
     - name: Install Helm plugin
