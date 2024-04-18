@@ -13,7 +13,7 @@ env:
 jobs:
   package-and-push:
     name: Package and Push Helm Chart
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -25,29 +25,23 @@ jobs:
 
     - name: Package Helm chart
       run: |
-        helm package rasul-app/ -d ./packaged-charts
+        helm package rasul-app/ -d packaged-charts
       working-directory: ${{ github.workspace }}
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.17'
 
     - name: Install Helm plugin
       run: |
         helm plugin install https://github.com/chartmuseum/helm-push
 
     - name: Authenticate with Google Cloud
-      uses: google-github-actions/auth@v2
+      uses: google-github-actions/auth@v0
       with:
-        token_format: access_token
-        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+        credentials: ${{ secrets.GCP_SA_KEY }}
 
-    - name: 'Helm login'
+    - name: Helm login to GAR
       run: |
-        gcloud auth print-access-token | helm registry login -u oauth2accesstoken \
-        --password-stdin https://us-central1-docker.pkg.dev
+        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+        echo ${{ secrets.GCP_SA_KEY }} | docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}
 
     - name: Push Helm chart to repository
       run: |
-        helm push ./packaged-charts/*.tgz "oci://us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/app-chart"
+        helm push packaged-charts/*.tgz oci://us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/app-chart
