@@ -45,4 +45,4 @@ jobs:
 
     - name: Push Helm chart to repository
       run: |
-        helm push packaged-charts/*.tgz oci://us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/app-chart
+          helm push packaged/*.tgz oci://${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}
