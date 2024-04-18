@@ -1,11 +1,9 @@
 name: Helm package and push to GAR
 
 on:
-  workflow_run:
-    workflows: ["Helm Lint"]
-    types:
-    - completed
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 env:
   PROJECT_ID: my-pro-417700
