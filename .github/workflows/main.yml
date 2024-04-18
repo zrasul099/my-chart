@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_ID: my-pro-417700
   REGISTRY_LOCATION: us-central1
-  REPOSITORY: app-chart
+  REPOSITORY: my-chart
 
 jobs:
   package-and-push:
